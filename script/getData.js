@@ -50,29 +50,23 @@ export const getData = {
   },
   catalog(callback) {
     this.get((data) => {
-      let arr = []
-      for (const item of data) {
-        for (const prop in item) {
-          if (prop === PARAM.cat) {
-            arr.push(item[prop])
-          }
-        }
-      }
-      const result = Array.from(new Set(arr))
+      const result = data.reduce((arr, item) => {
+        arr.push(item.category)
+        return Array.from(new Set(arr))
+      }, [])
       callback(result)
     })
   },
-  subCatalog(callback) {
+  subCatalog(value, callback) {
     this.get((data) => {
-      let arr = []
-      for (const item of data) {
-        for (const prop in item) {
-          if (prop === PARAM.subcat) {
-            arr.push(item[prop])
+      const result = data
+        .filter(item => item.category === value)
+        .reduce((arr, item) => {
+          if (!arr.includes(item.subcategory)) {
+            arr.push(item.subcategory)
           }
-        }
-      }
-      const result = Array.from(new Set(arr))
+          return arr
+        }, [])
       callback(result)
     })
   }
